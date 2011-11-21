@@ -1,0 +1,30 @@
+plugin.tx_mnspotify {
+	view {
+		templateRootPath = {$plugin.tx_mnspotify.view.templateRootPath}
+		partialRootPath = {$plugin.tx_mnspotify.view.partialRootPath}
+		layoutRootPath = {$plugin.tx_mnspotify.view.layoutRootPath}
+	}
+	persistence {
+		storagePid = {$plugin.tx_mnspotify.persistence.storagePid}
+	}
+}
+
+plugin.tx_mnspotify._CSS_DEFAULT_STYLE (
+	input.f3-form-error {
+		background-color:#FF9F9F;
+		border: 1px #FF0000 solid;
+	}
+
+	.tx-mn-spotify table {
+		border-collapse:separate;
+		border-spacing:10px;
+	}
+
+	.tx-mn-spotify table th {
+		font-weight:bold;
+	}
+
+	.tx-mn-spotify table td {
+		vertical-align:top;
+	}
+)
