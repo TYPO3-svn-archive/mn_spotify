@@ -99,7 +99,8 @@ $TCA['tx_mnspotify_domain_model_spotify'] = array(
 			'config' => array(
 				'type' => 'input',
 				'size' => 30,
-				'eval' => 'trim,required'
+				'eval' => 'trim,required',
+                'default' => 'http://ws.spotify.com/lookup/1/'
 			),
 		),
 	),

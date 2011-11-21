@@ -6,8 +6,20 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="tx_mnspotify_domain_model_spotify">Spotify</label>
-			<label index="tx_mnspotify_domain_model_spotify.url">url</label>
+		<label index="search_input_label">Free search</label>
+			<label index="search_label">Search</label>
+            <label index="artist_label">Artist</label>
+            <label index="album_label">Album</label>
+            <label index="track_label">Track</label>
+			<label index="result_label">Result</label>
+		  </languageKey>
+        <languageKey index="sv" type="array">
+          <label index="search_input_label">Fritext sök</label>
+			     <label index="search_label">Sök</label>
+           <label index="artist_label">Artist</label>
+           <label index="album_label">Album</label>
+           <label index="track_label">Spår</label>
+		    <label index="result_label">Resultat</label>
 		</languageKey>
 	</data>
 </T3locallang>

@@ -13,25 +13,69 @@ in /Configuration/ExtensionBuilder/settings.yaml:
 Otherwise your changes will be overwritten the next time you save the extension in the extension builder
 
 <f:section name="main">
-<h1>Listing for Spotify</h1>
 
-<f:flashMessages />
+<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>-->
+<script type="text/javascript">
+    
+    jQuery(document).ready(function() {
+        jQuery('#spotify_search_button').click(function() {
+             if(jQuery("#spotify_search_query").val() != "") {
+                var selectedSearchType = jQuery('input:radio[name=spotify_search_type]:checked').val();
+                jQuery.ajax({
+                    type: "GET",
+                    url: "http://ws.spotify.com/search/1/" + selectedSearchType + ".json?q=" + jQuery("#spotify_search_query").val(),
+                    dataType: "JSON",
+                    success: function(data) {
+                        var dataType = "";
+                        var resultHtml = "";
+                        //If artist search
+                        if(selectedSearchType == "artist") {
+                            jQuery.each(data.artists, function() {
+                                resultHtml += "<div class='spotify_result_item'><a href='" + this.href + "'>" + this.name + "</a></div>";
+                            });
+                        }
+                        //If album search
+                        else if(selectedSearchType == "album") {
+                            jQuery.each(data.albums, function() {
+                                var artistName = "";
+                                jQuery.each(this.artists, function() {
+                                    artistName = this.name;
+                                }); 
+                                resultHtml += "<div class='spotify_result_item'><a href='" + this.href + "'><b>" + artistName + "</b>: " + this.name + "</a></div>";
+                            });
+                        }
+                        //If track search
+                        else if(selectedSearchType == "track") {
+                            jQuery.each(data.tracks, function() {
+                                var artistName = "";
+                                jQuery.each(this.artists, function() {
+                                    artistName = this.name;
+                                }); 
+                                var albumName = "(" + this.album.name + ", " + this.album.released + ")";
+                                resultHtml += "<div class='spotify_result_item'><a href='" + this.href + "'><b>" + artistName + " " + albumName + "</b>: " 
+                                    + this.name + "</a></div>";
+                            });
+                        }
+                        
+                        jQuery("#spotify_search_result").html(resultHtml);
+                    }
+                });   
+             }
+             else {
+                alert("Input must be filled in!");
+             }
+        });
+    });
+    
+</script>   
 
-<table  class="tx_mnspotify" >
-	<tr>
-		<th><f:translate key="tx_mnspotify_domain_model_spotify.url" /></th>
-		<th> </th>
-		<th> </th>
-	</tr>
+<f:translate key="search_input_label" /> : <br />
+<input type="text" id="spotify_search_query" /><br />
+<input type="radio" name="spotify_search_type" value="artist" checked="checked" /><f:translate key="artist_label" /><br /> 
+<input type="radio" name="spotify_search_type" value="album" /><f:translate key="album_label" /><br />
+<input type="radio" name="spotify_search_type" value="track" /><f:translate key="track_label" /><br />
+<input type="button" id="spotify_search_button" value="<f:translate key='search_label' />" />
+<br />
+<div id="spotify_search_result"></div>
 
-	<f:for each="{spotifies}" as="spotify">
-		<tr>
-			<td><f:link.action action="show" arguments="{spotify : spotify}"> {spotify.url}</f:link.action></td>
-			<td><f:link.action action="edit" arguments="{spotify : spotify}">Edit</f:link.action></td>
-			<td><f:link.action action="delete" arguments="{spotify : spotify}">Delete</f:link.action></td>
-		</tr>
-	</f:for>
-</table>
-
-<f:link.action action="new">New Spotify</f:link.action>
 </f:section>

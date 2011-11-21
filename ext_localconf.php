@@ -7,12 +7,12 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 	$_EXTKEY,
 	'Pi1',
 	array(
-		'Spotify' => 'list, show, new, create, edit, update, delete',
+		'Spotify' => 'list',
 		
 	),
 	// non-cacheable actions
 	array(
-		'Spotify' => 'create, update, delete',
+		'Spotify' => 'list',
 		
 	)
 );
