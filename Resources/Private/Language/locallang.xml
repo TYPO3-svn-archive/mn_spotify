@@ -12,6 +12,11 @@
             <label index="album_label">Album</label>
             <label index="track_label">Track</label>
 			<label index="result_label">Result</label>
+            <label index="share_label">Share</label>
+            <label index="share_form_label">Share with a friend</label>
+            <label index="share_form_your_email_label">Your email</label>
+            <label index="share_form_friends_email_label">Your friend´s email</label>
+            <label index="share_form_send_label">Send</label>
 		  </languageKey>
         <languageKey index="sv" type="array">
           <label index="search_input_label">Fritext sök</label>
@@ -20,6 +25,11 @@
            <label index="album_label">Album</label>
            <label index="track_label">Spår</label>
 		    <label index="result_label">Resultat</label>
+            <label index="share_label">Dela</label>
+            <label index="share_form_label">Dela med en vän</label>
+            <label index="share_form_your_email_label">Din epost</label>
+            <label index="share_form_friends_email_label">Vännens epost</label>
+            <label index="share_form_send_label">Skicka</label>
 		</languageKey>
 	</data>
 </T3locallang>
