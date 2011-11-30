@@ -83,8 +83,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
     		width: 350,
     		modal: true,
     		buttons: {
-    			"Create an account": function() {
-                    console.log(clickedElement);
+    			"Share song": function() {
     				/*var bValid = true;
     				allFields.removeClass( "ui-state-error" );
     
@@ -111,7 +110,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
     			}
     		},
     		close: function() {
-    			allFields.val("").removeClass("ui-state-error");
+    			jQuery(this).dialog("close");
     		}
     	});
         
