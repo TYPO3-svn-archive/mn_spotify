@@ -25,97 +25,70 @@ Otherwise your changes will be overwritten the next time you save the extension 
     
     jQuery(document).ready(function() {
         
-        //For the spotify search form
+        //On button click in searchform
         jQuery('#spotify_search_button').click(function() {
-             if(jQuery("#spotify_search_query").val() != "") {
-                var selectedSearchType = jQuery('input:radio[name=spotify_search_type]:checked').val();
-                jQuery.ajax({
-                    type: "GET",
-                    url: "http://ws.spotify.com/search/1/" + selectedSearchType + ".json?q=" + jQuery("#spotify_search_query").val(),
-                    dataType: "JSON",
-                    success: function(data) {
-                        var dataType = "";
-                        var resultHtml = "";
-                        //If artist search
-                        if(selectedSearchType == "artist") {
-                            jQuery.each(data.artists, function() {
-                                resultHtml += "<div class='spotify_result_item'><a href='" + this.href + "' class='spotify_item_url'>" + this.name + "</a>" 
-                                + "<input type='button' style='display: none;' class='share_spotify_with_friend' value='" + shareLabel + "' onclick='spotifyShareWindow(this);' /></div>";
-                            });
-                        }
-                        //If album search
-                        else if(selectedSearchType == "album") {
-                            jQuery.each(data.albums, function() {
-                                var artistName = "";
-                                jQuery.each(this.artists, function() {
-                                    artistName = this.name;
-                                }); 
-                                resultHtml += "<div class='spotify_result_item'><a href='" + this.href + "' class='spotify_item_url'><b>" + artistName + "</b>: " + this.name + "</a>" 
-                                + "<input type='button' style='display: none;' class='share_spotify_with_friend' value='" + shareLabel + "' onclick='spotifyShareWindow(this);' /></div>";
-                            });
-                        }
-                        //If track search
-                        else if(selectedSearchType == "track") {
-                            jQuery.each(data.tracks, function() {
-                                var artistName = "";
-                                jQuery.each(this.artists, function() {
-                                    artistName = this.name;
-                                }); 
-                                var albumName = "(" + this.album.name + ", " + this.album.released + ")";
-                                resultHtml += "<div class='spotify_result_item'><a href='" + this.href + "' class='spotify_item_url'><b>" + artistName + " " + albumName + "</b>: " 
-                                    + this.name + "</a><input style='display: none;' type='button' class='share_spotify_with_friend' value='" + shareLabel + "' onclick='spotifyShareWindow(this);' /></div>";
-                            });
-                        }
-                        
-                        jQuery("#spotify_search_result").html(resultHtml);
-                    }
-                });   
-             }
-             else {
-                alert("Input must be filled in!");
-             }
+            getSearchResult();
         });
         
-        
-        /*jQuery("#spotify-dialog-form").dialog({
-            autoOpen: false,
-    		height: 300,
-    		width: 350,
-    		modal: true,
-    		buttons: {
-    			"Share song": function() {
-    				var bValid = true;
-    				allFields.removeClass( "ui-state-error" );
-    
-    				bValid = bValid && checkLength( email, "email", 6, 80 );
-    
-    				bValid = bValid && checkRegexp( email, /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i, "eg. ui@jquery.com" );
-    
-    				if (bValid) {
-    					jQuery("#users tbody").append( "<tr>" +
-    						"<td>" + name.val() + "</td>" + 
-    						"<td>" + email.val() + "</td>" + 
-    						"<td>" + password.val() + "</td>" +
-    					"</tr>" ); 
-    					jQuery(this).dialog("close");
-    				}
-    			},
-    			Cancel: function() {
-    				jQuery(this).dialog("close");
-    			}
-    		},
-    		close: function() {
-    			jQuery(this).dialog("close");
-    		}
-    	});
-        
+        //On enter click in searchfield        
+        jQuery("#spotify_search_query").keypress(function(e) {
+            if(e.which == 13) {
+                getSearchResult();
+            }
+        });
         
     });
     
-    function spotifyShareWindow(element) {
-        clickedElement = element;
-        jQuery("#spotify-dialog-form").dialog("open");
-    }*/
+    //Make the request and populate search result
+    function getSearchResult() {
+        if(jQuery("#spotify_search_query").val() != "") {
+            var selectedSearchType = jQuery('input:radio[name=spotify_search_type]:checked').val();
+            jQuery.ajax({
+                type: "GET",
+                url: "http://ws.spotify.com/search/1/" + selectedSearchType + ".json?q=" + jQuery("#spotify_search_query").val(),
+                dataType: "JSON",
+                success: function(data) {
+                    var dataType = "";
+                    var resultHtml = "";
+                    //If artist search
+                    if(selectedSearchType == "artist") {
+                        jQuery.each(data.artists, function() {
+                            resultHtml += "<div class='spotify_result_item'><a href='" + this.href + "' class='spotify_item_url'>" + this.name + "</a>" 
+                            + "<input type='button' style='display: none;' class='share_spotify_with_friend' value='" + shareLabel + "' onclick='spotifyShareWindow(this);' /></div>";
+                        });
+                    }
+                    //If album search
+                    else if(selectedSearchType == "album") {
+                        jQuery.each(data.albums, function() {
+                            var artistName = "";
+                            jQuery.each(this.artists, function() {
+                                artistName = this.name;
+                            }); 
+                            resultHtml += "<div class='spotify_result_item'><a href='" + this.href + "' class='spotify_item_url'><b>" + artistName + "</b>: " + this.name + "</a>" 
+                            + "<input type='button' style='display: none;' class='share_spotify_with_friend' value='" + shareLabel + "' onclick='spotifyShareWindow(this);' /></div>";
+                        });
+                    }
+                    //If track search
+                    else if(selectedSearchType == "track") {
+                        jQuery.each(data.tracks, function() {
+                            var artistName = "";
+                            jQuery.each(this.artists, function() {
+                                artistName = this.name;
+                            }); 
+                            var albumName = "(" + this.album.name + ", " + this.album.released + ")";
+                            resultHtml += "<div class='spotify_result_item'><a href='" + this.href + "' class='spotify_item_url'><b>" + artistName + " " + albumName + "</b>: " 
+                                + this.name + "</a><input style='display: none;' type='button' class='share_spotify_with_friend' value='" + shareLabel + "' onclick='spotifyShareWindow(this);' /></div>";
+                        });
+                    }
+                    
+                    jQuery("#spotify_search_result").html(resultHtml);
+                }
+            });   
+         }
+         else {
+            alert("Input must be filled in!");
+         }
+    }
     
 </script>   
 
@@ -127,16 +100,5 @@ Otherwise your changes will be overwritten the next time you save the extension 
 <input type="button" id="spotify_search_button" value="<f:translate key='search_label' />" />
 <br />
 <div id="spotify_search_result"></div>
-
-<div id="spotify-dialog-form" title="<f:translate key='share_form_label' />" style="display: none;">
-	<form>
-	<fieldset>
-		<label for="your_email"><f:translate key='share_form_your_email_label' /></label>
-		<input type="text" name="your_email" id="your_email" class="text ui-widget-content ui-corner-all" />
-		<label for="friends_email"><f:translate key='share_form_friends_email_label' /></label>
-		<input type="text" name="friends_email" id="friends_email" class="text ui-widget-content ui-corner-all" />
-	</fieldset>
-	</form>
-</div>
 
 </f:section>
